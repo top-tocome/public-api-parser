@@ -8,4 +8,6 @@ version '0.0.1'
 repositories {
     mavenCentral()
 }
-
+dependencies {
+    compile(project(":commonly-used-tools"))
+}
