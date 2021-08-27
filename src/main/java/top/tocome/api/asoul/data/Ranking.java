@@ -1,5 +1,9 @@
 package top.tocome.api.asoul.data;
 
+/**
+ * 作文展响应参数<br>
+ * [api文档](https://github.com/ASoulCnki/ASoulCnkiBackend/blob/master/api.md)
+ */
 public class Ranking {
     /**
      * 查询状态码	0以外的值为查询失败

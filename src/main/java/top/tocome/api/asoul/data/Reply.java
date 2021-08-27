@@ -1,5 +1,9 @@
 package top.tocome.api.asoul.data;
 
+/**
+ * 评论参数<br>
+ * [api文档](https://github.com/ASoulCnki/ASoulCnkiBackend/blob/master/api.md)
+ */
 public class Reply {
     /**
      * 该评论的回复ID	0以外的值为查询失败
