@@ -71,14 +71,14 @@ public class ASoulCnki {
      * @return {@link Ranking}
      */
     public static Ranking ranking(int pageSize, int pageNum, TimeRangeMode timeRangeMode, SortMode sortMode, long[] ids, String[] keywords) {
-        String url = RankingApi +
-                "/?pageSize=" + pageSize +
-                "&pageNum=" + pageNum +
-                "&timeRangeMode=" + timeRangeMode.ordinal() +
-                "&sortMode=" + sortMode.ordinal() +
-                "&ids=" + Arrays.toString(ids).replaceAll("[\\[\\] ]", "") +
-                "&keywords=" + Arrays.toString(keywords).replaceAll("[\\[\\] ]", "");
-        String jsonString = Http.get(url);
+        StringBuilder url = new StringBuilder(RankingApi);
+        url.append("/?pageSize=").append(pageSize)
+                .append("&pageNum=").append(pageNum)
+                .append("&timeRangeMode=").append(timeRangeMode.ordinal())
+                .append("&sortMode=").append(sortMode.ordinal());
+        if (ids != null) url.append("&ids=").append(Arrays.toString(ids).replaceAll("[\\[\\] ]", ""));
+        if (keywords != null) url.append("&keywords=").append(Arrays.toString(keywords).replaceAll("[\\[\\] ]", ""));
+        String jsonString = Http.get(url.toString());
         return JSON.parseObject(jsonString, Ranking.class);
     }
 
