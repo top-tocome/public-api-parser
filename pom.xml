@@ -6,12 +6,7 @@
 
     <groupId>top.tocome</groupId>
     <artifactId>public-api-parser</artifactId>
-    <packaging>pom</packaging>
     <version>0.0.1</version>
-
-    <modules>
-        <module>commonly-used-tools</module>
-    </modules>
 
     <properties>
         <javadoc.skip>false</javadoc.skip>
