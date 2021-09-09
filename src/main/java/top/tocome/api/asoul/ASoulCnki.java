@@ -1,8 +1,8 @@
 package top.tocome.api.asoul;
 
 import com.alibaba.fastjson.JSON;
-import top.tocome.api.asoul.data.Check;
-import top.tocome.api.asoul.data.Ranking;
+import top.tocome.api.PublicApi;
+import top.tocome.api.asoul.data.*;
 import top.tocome.io.Http;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.Arrays;
 /**
  * [枝网查重开源项目地址](https://github.com/ASoulCnki/ASoulCnki)
  */
-public class ASoulCnki {
+public class ASoulCnki extends PublicApi {
     /**
      * 项目部署站点
      */
@@ -33,15 +33,13 @@ public class ASoulCnki {
      * Content-Type: application/json
      *
      * @param text 查重文本	长度在10-1000之间
-     * @return {@link Check}
+     * @return 原生数据
      */
-    public static Check check(String text) {
-        HttpURLConnection connection = null;
+    public static String check(String text) {
         try {
-            connection = Http.getConnection(CheckApi);
+            HttpURLConnection connection = Http.getConnection(CheckApi);
             connection.setRequestProperty("Content-Type", "application/json");
-            String s = new String(Http.post(connection, "{ \"text\": \"" + text + "\"}"));
-            return JSON.parseObject(s, Check.class);
+            return new String(Http.post(connection, "{ \"text\": \"" + text + "\"}"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -49,37 +47,110 @@ public class ASoulCnki {
     }
 
     /**
+     * 发出请求并将数据解析为{@link Check}数据类
+     *
+     * @return {@link Check}
+     * @see #check(String)
+     */
+    public static Check parseCheck(String text) {
+        return JSON.parseObject(check(text), Check.class);
+    }
+
+    /**
      * 作文展<br>
      * 请求类型：GET<br>
-     * 请求地址：{@value #RankingApi}
+     * 请求地址：{@value #RankingApi}<br>
+     * 请求时的必要参数
      *
-     * @param pageSize      每页展示的评论数	目前仅支持pageSize=10
-     * @param pageNum       评论页码	从1开始
+     * @param pageSize      {@link #pageSize(int)}
+     * @param pageNum       {@link #pageNum(int)}
+     * @param timeRangeMode {@link #timeRangeMode(TimeRangeMode)}
+     * @param sortMode      {@link #sortMode(SortMode)}
+     */
+    public ASoulCnki(int pageSize, int pageNum, TimeRangeMode timeRangeMode, SortMode sortMode) {
+        super(RankingApi);
+        u.addParam("pageSize", String.valueOf(pageSize))
+                .addParam("pageNum", String.valueOf(pageNum))
+                .addParam("timeRangeMode", String.valueOf(timeRangeMode.ordinal()))
+                .addParam("sortMode", String.valueOf(sortMode.ordinal()));
+    }
+
+    /**
+     * 效果为修改必选参数
+     *
+     * @param pageSize 每页展示的评论数	目前仅支持pageSize=10
+     */
+    public ASoulCnki pageSize(int pageSize) {
+        u.setParam("pageSize", String.valueOf(pageSize));
+        return this;
+    }
+
+    /**
+     * 效果为修改必选参数
+     *
+     * @param pageNum 评论页码	从1开始
+     */
+    public ASoulCnki pageNum(int pageNum) {
+        u.setParam("pageNum", String.valueOf(pageNum));
+        return this;
+    }
+
+    /**
+     * 效果为修改必选参数
+     *
      * @param timeRangeMode {@link TimeRangeMode 时间范围选择}<br>
      *                      0 全部时间<br>
      *                      1 一周内<br>
      *                      2 三天以内
-     * @param sortMode      {@link SortMode 排序模式}<br>
-     *                      0 总点赞数（参见related.reply.similar_like_num）<br>
-     *                      1 点赞数<br>
-     *                      2 相似小作文数（引用次数）
-     * @param ids           指定动态发布者（非评论）	可选参数，默认为全部<br>
-     *                      传值为uid数组 例：ids=uid1,uid2.....
-     * @param keywords      指定关键词	可选参数，默认无限制条件<br>
-     *                      传值为关键词数组 例 keywords=k1,k2,...<br>
-     *                      每个关键词不超过10个字符 最多支持三个关键词
+     */
+    public ASoulCnki timeRangeMode(TimeRangeMode timeRangeMode) {
+        u.setParam("timeRangeMode", String.valueOf(timeRangeMode.ordinal()));
+        return this;
+    }
+
+    /**
+     * 效果为修改必选参数
+     *
+     * @param sortMode {@link SortMode 排序模式}<br>
+     *                 0 总点赞数（参见{@link Reply#similar_like_sum related.reply.similar_like_num}）<br>
+     *                 1 点赞数<br>
+     *                 2 相似小作文数（引用次数）
+     */
+    public ASoulCnki sortMode(SortMode sortMode) {
+        u.setParam("sortMode", String.valueOf(sortMode.ordinal()));
+        return this;
+    }
+
+    /**
+     * 可选参数，默认为全部
+     *
+     * @param ids 指定动态发布者（非评论）
+     *            传值为uid数组 例：ids=uid1,uid2.....
+     */
+    public ASoulCnki ids(long... ids) {
+        u.setParam("ids", Arrays.toString(ids).replaceAll("[\\[\\] ]", ""));
+        return this;
+    }
+
+    /**
+     * 可选参数，默认无限制条件
+     *
+     * @param keywords 指定关键词
+     *                 传值为关键词数组 例 keywords=k1,k2,...<br>
+     *                 每个关键词不超过10个字符 最多支持三个关键词
+     */
+    public ASoulCnki keywords(String... keywords) {
+        u.setParam("keywords", Arrays.toString(keywords).replaceAll("[\\[\\] ]", ""));
+        return this;
+    }
+
+    /**
+     * 发出请求并将数据解析为{@link Ranking}数据类
+     *
      * @return {@link Ranking}
      */
-    public static Ranking ranking(int pageSize, int pageNum, TimeRangeMode timeRangeMode, SortMode sortMode, long[] ids, String[] keywords) {
-        StringBuilder url = new StringBuilder(RankingApi);
-        url.append("/?pageSize=").append(pageSize)
-                .append("&pageNum=").append(pageNum)
-                .append("&timeRangeMode=").append(timeRangeMode.ordinal())
-                .append("&sortMode=").append(sortMode.ordinal());
-        if (ids != null) url.append("&ids=").append(Arrays.toString(ids).replaceAll("[\\[\\] ]", ""));
-        if (keywords != null) url.append("&keywords=").append(Arrays.toString(keywords).replaceAll("[\\[\\] ]", ""));
-        String jsonString = Http.get(url.toString());
-        return JSON.parseObject(jsonString, Ranking.class);
+    public Ranking parseRanking() {
+        return JSON.parseObject(request(), Ranking.class);
     }
 
     /**
