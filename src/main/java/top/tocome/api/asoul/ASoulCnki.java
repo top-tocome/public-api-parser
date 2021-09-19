@@ -20,11 +20,11 @@ public class ASoulCnki extends PublicApi {
     /**
      * 查重api
      */
-    public static final String CheckApi = SiteUrl + "/v1/api/check";
+    public static final String CheckApi = SiteUrl + "/v1/api/check/";
     /**
      * 作文展api
      */
-    public static final String RankingApi = SiteUrl + "/v1/api/ranking";
+    public static final String RankingApi = SiteUrl + "/v1/api/ranking/";
 
     /**
      * 查重<br>

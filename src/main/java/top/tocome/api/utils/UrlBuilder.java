@@ -53,7 +53,7 @@ public class UrlBuilder {
     @Override
     public String toString() {
         StringBuilder u = new StringBuilder(api);
-        u.append("/?");
+        u.append("?");
         for (KeyValue k : keyValues) {
             u.append("&").append(k.getKey()).append("=").append(k.getValue());
         }

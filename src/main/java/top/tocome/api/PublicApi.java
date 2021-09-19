@@ -3,6 +3,9 @@ package top.tocome.api;
 import top.tocome.api.utils.UrlBuilder;
 import top.tocome.io.Http;
 
+/**
+ * get请求方式的api
+ */
 public class PublicApi {
     /**
      * url参数构造

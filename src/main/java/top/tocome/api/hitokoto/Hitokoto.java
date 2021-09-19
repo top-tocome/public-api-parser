@@ -16,7 +16,7 @@ public class Hitokoto extends PublicApi {
      * v1接口地址
      * 未来将更换为v2
      */
-    public static final String ApiV1 = "https://v1.hitokoto.cn";
+    public static final String ApiV1 = "https://v1.hitokoto.cn/";
 
     public Hitokoto() {
         super(ApiV1);
