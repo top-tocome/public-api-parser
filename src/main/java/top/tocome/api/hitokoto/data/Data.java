@@ -1,5 +1,8 @@
 package top.tocome.api.hitokoto.data;
 
+/**
+ * 一言响应数据格式
+ */
 public class Data {
     /**
      * 一言标识
